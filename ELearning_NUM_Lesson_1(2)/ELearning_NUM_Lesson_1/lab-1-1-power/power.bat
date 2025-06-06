@@ -1,0 +1,2 @@
+power.exe
+pause
