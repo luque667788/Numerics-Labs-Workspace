@@ -64,5 +64,38 @@ int main(void)
     printf("Found %i feasible solutions.\n", n);
     // Print the best solution found
     printf("f(%i, %i) = %i\n", xs, ys, zs);
+
+    // Write feasible solutions to a file for gnuplot
+    FILE *fp = fopen("feasible_points.dat", "w");
+    if (fp) {
+        for (int i = 0; i < k; i++) {
+            fprintf(fp, "%d %d %d\n", xk[i], yk[i], zk[i]);
+        }
+        fclose(fp);
+        printf("Feasible points written to feasible_points.dat\n");
+    } else {
+        printf("Error: Could not write feasible_points.dat\n");
+    }
+
+    // Write the best solution to a file for gnuplot highlighting
+    fp = fopen("best_point.dat", "w");
+    if (fp) {
+        fprintf(fp, "%d %d %d\n", xs, ys, zs);
+        fclose(fp);
+        printf("Best point written to best_point.dat\n");
+    } else {
+        printf("Error: Could not write best_point.dat\n");
+    }
+
+    // Print gnuplot instructions
+    printf("\nTo visualize feasible solutions and the optimum, run:\n");
+    printf("gnuplot -persist <<EOF\n");
+    printf("set xlabel 'x'\n");
+    printf("set ylabel 'y'\n");
+    printf("set zlabel 'f(x,y)'\n");
+    printf("set title 'Feasible Solutions and Optimum'\n");
+    printf("splot 'feasible_points.dat' using 1:2:3 with points pt 7 lc rgb 'blue' title 'Feasible',\\\n");
+    printf("      'best_point.dat' using 1:2:3 with points pt 7 ps 2 lc rgb 'red' title 'Optimum'\n");
+    printf("EOF\n");
     return EXIT_SUCCESS;
 }
