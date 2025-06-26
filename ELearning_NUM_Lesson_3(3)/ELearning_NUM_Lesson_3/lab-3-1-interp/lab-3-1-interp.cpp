@@ -459,9 +459,9 @@ static double LagrangeInterp1D(double fvals[], double xnodes[], int n, double ba
          * - Closer nodes have larger influence on the result
          * - Barycentric weights wⱼ encode the geometric properties of node distribution
          */
-        numt += barw[j] / tdiff * fvals[j];    // Weighted function value contribution
-        denomt += + barw[j] / tdiff;           // Weight contribution (note: extra '+' is redundant)
-        
+        numt += ((barw[j] / tdiff ) * fvals[j]);    // Weighted function value contribution
+        denomt += (barw[j] / tdiff);           // Weight contribution (note: extra '+' is redundant)
+
         /*
          * SINGULARITY HANDLING
          * ====================
@@ -653,6 +653,8 @@ int main(void)
 	for (k=0; k<=n; k++)
 		f_sample[k] = f(xnodes[k]);
 
+
+		//----------
 	/*
 	 * DUAL FUNCTION EVALUATION PHASE
 	 * ==============================
