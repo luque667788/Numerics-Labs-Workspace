@@ -1,5 +1,7 @@
 // math.c - Linear Least-Squares Fit Example
 //
+
+// Basically it is doing the matrix stuff for a linear least-squares fit but doing without any libraries. af is the vector we get for the best fit line parameters.
 // This program demonstrates how to perform a linear least-squares fit to noisy data.
 // It generates synthetic data points (x, y) along a line, adds random noise to simulate measurements,
 // and then solves for the best-fit line parameters using the normal equations (matrix inversion).
@@ -27,7 +29,7 @@
 // - The random noise is uniformly distributed in [-1, 1].
 // - The matrix inversion is done explicitly for the 2x2 case.
 //
-// This is a good example of basic numerical linear algebra and data fitting in C.
+// This is a good example of ELearning_NUM_Lesson_1(2)/ELearning_NUM_Lesson_1/1-2-jacobi-graph/Makefilebasic numerical linear algebra and data fitting in C.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,12 +84,15 @@ int main(void)
     int k;
     double x[n+1];
     // Generate x values evenly spaced in [0, 10]
+    //q: how many points to generate? a: 20 from 0 to 10 between values
     for (k=0; k<=n; k++)
         x[k] = 0.0 + 10.0*k/n;
     double ys[n+1];
     // Compute true y values (without noise)
     for (k=0; k<=n; k++)
         ys[k] = f(x[k], a0, a1);
+
+
     // Print x and ys arrays
     for (k=0; k<=n; k++)
         printf("%2.2lf ", x[k]);
@@ -95,19 +100,25 @@ int main(void)
     for (k=0; k<=n; k++)
         printf("%2.2lf ", ys[k]);
     printf("\n");
+    
     // simulate measured data by adding random noise to ys
     srand(clock());
     double y[n+1];
     for (k=0; k<=n; k++)
     {
         double d = rand();
-        d /= RAND_MAX;
+        d /= RAND_MAX;// Q: is the d from rand() in [0, 1]? A: Yes, it is uniformly distributed in [0, 1].
+
         y[k] = ys[k] + 2*(-0.5 + d); // noise in [-1, 1]
     }
     // Print noisy measured data
     for (k=0; k<=n; k++)
         printf("%2.2lf ", y[k]);
     printf("\n");
+
+// finish the sample fake data generation
+// start the linear least-squares fit
+
     // linear least-squares fit using normal equations
     // Matrix A and vector B for the system A * af = B
     double A[2][2] =
@@ -131,5 +142,64 @@ int main(void)
     printm("A" , 2, 2, (double *) A );
     printm("B" , 2, 1, (double *) B );
     printm("af", 2, 1, (double *) af);
+
+    // --- Terminal Plotting ---
+    printf("\n--- Plot (*: data, .: fit) ---\n");
+
+    const int PLOT_WIDTH = 70;
+    const int PLOT_HEIGHT = 20;
+    char plot[PLOT_HEIGHT][PLOT_WIDTH];
+
+    // Find min and max of y for scaling the plot
+    double y_min = y[0], y_max = y[0];
+    for (k = 1; k <= n; k++) {
+        if (y[k] < y_min) y_min = y[k];
+        if (y[k] > y_max) y_max = y[k];
+    }
+    // Add some padding to the y-axis
+    double y_padding = (y_max - y_min) * 0.1;
+    y_min -= y_padding;
+    y_max += y_padding;
+
+    // Initialize plot with spaces
+    for (int i = 0; i < PLOT_HEIGHT; i++) {
+        for (int j = 0; j < PLOT_WIDTH; j++) {
+            plot[i][j] = ' ';
+        }
+    }
+
+    double x_max = 10.0; // As defined in data generation
+    double y_range = y_max - y_min;
+    if (y_range == 0) y_range = 1; // Avoid division by zero
+
+    // Draw the fitted line on the plot
+    for (int j = 0; j < PLOT_WIDTH; j++) {
+        double plot_x = (double)j / (PLOT_WIDTH - 1) * x_max;
+        double plot_y_fit = f(plot_x, af[0], af[1]);
+        if (plot_y_fit >= y_min && plot_y_fit <= y_max) {
+            int i = (int)(((y_max - plot_y_fit) / y_range) * (PLOT_HEIGHT - 1) + 0.5);
+            if (i >= 0 && i < PLOT_HEIGHT) {
+                plot[i][j] = '.';
+            }
+        }
+    }
+
+    // Draw the noisy data points on the plot (overwrites the line)
+    for (k = 0; k <= n; k++) {
+        int j = (int)((x[k] / x_max) * (PLOT_WIDTH - 1) + 0.5);
+        int i = (int)(((y_max - y[k]) / y_range) * (PLOT_HEIGHT - 1) + 0.5);
+        if (i >= 0 && i < PLOT_HEIGHT && j >= 0 && j < PLOT_WIDTH) {
+            plot[i][j] = '*';
+        }
+    }
+
+    // Print the final plot to the console
+    for (int i = 0; i < PLOT_HEIGHT; i++) {
+        for (int j = 0; j < PLOT_WIDTH; j++) {
+            putchar(plot[i][j]);
+        }
+        putchar('\n');
+    }
+
     return EXIT_SUCCESS;
 }

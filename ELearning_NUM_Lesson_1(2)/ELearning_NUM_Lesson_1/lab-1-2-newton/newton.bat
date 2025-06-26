@@ -1,2 +1,0 @@
-newton.exe
-pause

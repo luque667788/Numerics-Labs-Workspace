@@ -155,7 +155,7 @@ int main(void)
 		mulsum(x, y, n) // Second element of vector B
 	};
 
-    // --- Step 4: Solve the system by hand (explicit 2x2 inverse) ---
+    // --- Step 4: Solve the system by hand)(also did that in the previous folders) (explicit 2x2 inverse) ---
     // The following formulas solve for af[0] (intercept) and af[1] (slope)
     // using the inverse of a 2x2 matrix
     double af[2] =

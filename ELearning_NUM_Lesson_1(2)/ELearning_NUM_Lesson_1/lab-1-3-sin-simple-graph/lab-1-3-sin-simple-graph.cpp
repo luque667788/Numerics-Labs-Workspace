@@ -1,8 +1,26 @@
+/*
+ * TAYLOR SERIES APPROXIMATION AND PLOTTING FOR sin(x) (NO PERIODICITY HANDLING)
+ *
+ * GENERAL OVERVIEW:
+ * This program approximates sin(x) using the first four terms of its Taylor series and plots the result using FLTK.
+ * The Taylor series for sin(x) is: sin(x) = x - x^3/3! + x^5/5! - x^7/7! + ...
+ * This version does NOT handle periodicity, so accuracy decreases for large x.
+ * The program draws the resulting curve in a window.
+ *
+ * CODE LOGIC:
+ * - RaisePower: Computes f^power for integer power (handles negative powers as reciprocals).
+ * - Sin: Sums the first four terms of the Taylor series for sin(x) (no periodicity handling).
+ * - The main loop fills arrays with (x, sin(x)) values and the graph class draws the curve.
+ *
+ * DIFFERENCE FROM PERIODICITY-HANDLING VERSION:
+ * - This version does not shift x or flip the sign for large x, so the Taylor approximation is only accurate for small x.
+ * - The periodicity-handling version is more accurate for larger x.
+ */
+
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Box.H>
 #include <FL/fl_draw.H>
-
 #include <math.h>           // for comparison only
 
 /* Lab 1.3 Write your own function to evaluate the trigonometric function sin(x) */
@@ -40,41 +58,24 @@ static float RaisePower(float f, int power)
     return result;
 }
 
-// sin(x) = sum(i=0,n) (-1)^i x^(2i+1) / (2i+1)!
-// sin(x) = x - x^3/3! + x^5/5! - x^7/7! + ...
-
+// sin(x) = x - x^3/3! + x^5/5! - x^7/7! (Taylor series, first four terms)
 static float Sin(float x)
 {
     return ( x - RaisePower(x, 3)/6 + RaisePower(x, 5)/120 - RaisePower(x, 7)/5040 );
+    // 3! = 6, 5! = 120, 7! = 5040
 }
-
-/*
-static float Sin(float x)
-{
-	int sign = 1;
-
-	// sin(x) is periodic so move Taylor-series working-point
-	while (x > Pi)
-	{
-		x -= Pi;
-		sign *= -1;
-	}
-	
-    return sign * ( x - RaisePower(x, 3)/6 + RaisePower(x, 5)/120 - RaisePower(x, 7)/5040 );
-}
-*/
 
 /************************************************/
 
-#define	SEQ_MAX		100+1
+#define SEQ_MAX 100+1
 
 struct SEQ
 {
-	float x[SEQ_MAX];
-	float y[SEQ_MAX];
-	int n;
+    float x[SEQ_MAX]; // x values
+    float y[SEQ_MAX]; // y = sin(x) values
+    int n;            // number of points
 
-	Fl_Window *window;
+    Fl_Window *window;
 };
 
 static struct SEQ Seq;

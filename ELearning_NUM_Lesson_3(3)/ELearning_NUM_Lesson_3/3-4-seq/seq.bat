@@ -1,2 +1,0 @@
-seq.exe
-pause

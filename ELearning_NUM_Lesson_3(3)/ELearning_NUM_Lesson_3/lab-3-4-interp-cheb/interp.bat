@@ -1,2 +1,0 @@
-interp.exe
-pause

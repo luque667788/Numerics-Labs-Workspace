@@ -11,7 +11,7 @@ RUN apt-get update && \
     apt-get install -y \
     build-essential \
     gfortran \
-    liblapack-dev \
+    liblapack-dev \ 
     libblas-dev \
     libnlopt-dev \
     libfltk1.3-dev \

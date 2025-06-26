@@ -1,3 +1,18 @@
+/*
+ * TAYLOR SERIES APPROXIMATION AND PLOTTING FOR sin(x)
+ *
+ * GENERAL OVERVIEW:
+ * This program approximates sin(x) using the first four terms of its Taylor series and plots the result using FLTK.
+ * The Taylor series for sin(x) is: sin(x) = x - x^3/3! + x^5/5! - x^7/7! + ...
+ * This version also handles periodicity by shifting x by Pi and flipping the sign as needed.
+ * The program draws the resulting curve in a window.
+ *
+ * CODE LOGIC:
+ * - RaisePower: Computes f^power for integer power (handles negative powers as reciprocals).
+ * - Sin: Sums the first four terms of the Taylor series for sin(x), and handles periodicity for better accuracy.
+ * - The main loop fills arrays with (x, sin(x)) values and the graph class draws the curve.
+ */
+
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Box.H>
@@ -40,16 +55,8 @@ static float RaisePower(float f, int power)
     return result;
 }
 
-// sin(x) = sum(i=0,n) (-1)^i x^(2i+1) / (2i+1)!
-// sin(x) = x - x^3/3! + x^5/5! - x^7/7! + ...
-
-/*
-static float Sin(float x)
-{
-    return ( x - RaisePower(x, 3)/6 + RaisePower(x, 5)/120 - RaisePower(x, 7)/5040 );
-}
-*/
-
+// sin(x) = x - x^3/3! + x^5/5! - x^7/7! (Taylor series, first four terms)
+// This version also handles periodicity for better accuracy
 static float Sin(float x)
 {
 	int sign = 1;
@@ -66,13 +73,13 @@ static float Sin(float x)
 
 /************************************************/
 
-#define	SEQ_MAX		100+1
+#define SEQ_MAX 100+1
 
 struct SEQ
 {
-	float x[SEQ_MAX];
-	float y[SEQ_MAX];
-	int n;
+    float x[SEQ_MAX]; // x values
+    float y[SEQ_MAX]; // y = sin(x) values
+    int n;            // number of points
 };
 
 static struct SEQ Seq;
