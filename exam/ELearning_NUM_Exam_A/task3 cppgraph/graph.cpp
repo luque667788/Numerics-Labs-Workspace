@@ -150,9 +150,9 @@ int main(void)
 	for (k=0; k<=n; k++)
 	{
 		Graph.t[k]  = t[k];
-		Graph.x1[k] = u[k];    // input u(t)
-		Graph.x2[k] = x1[k];   // first Euler stage
-		Graph.x3[k] = x2[k];   // second Euler stage (final solution)
+		Graph.x1[k] = u[k];    // input u(t) - blue
+		Graph.x2[k] = x2[k];   // final solution x2(t) - red
+		Graph.x3[k] = x1[k];   // intermediate solution x1(t) - orange
 	}
 	Graph.n = k;
 
