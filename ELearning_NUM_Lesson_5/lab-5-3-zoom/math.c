@@ -85,5 +85,7 @@ int main(void)
     printf("Found %i feasible solutions.\n", n);
     // Print the best solution found
     printf("f(%.1f, %.1f) = %.1f\n", xs, ys, zs);
+
+
     return EXIT_SUCCESS;
 }

@@ -391,8 +391,9 @@ int main(void)
 	// Same mathematical region: contains entire Mandelbrot set with good context
 	// Same 360,000 complex number calculations
 	// Same convergence testing and data storage
-	Mandelbrot(-2.0, 2.0, -2.0, 2.0);
-	
+	Mandelbrot(-2.0, 0, -1.0, 1.0);
+	//Mandelbrot(-0.5, 0.6, -0.1, 0.1);
+
 	// After Mandelbrot() completes:
 	//   - Graph.plane[][] contains the SAME computed escape times as before
 	//   - GRAPHBOX will automatically redraw with ENHANCED gradient colors

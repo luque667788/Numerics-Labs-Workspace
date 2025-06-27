@@ -319,7 +319,8 @@ int main(void)
 	// rmin=-2.0, rmax=2.0: Real axis from -2 to +2
 	// imin=-2.0, imax=2.0: Imaginary axis from -2i to +2i
 	// This covers complex numbers c where -2 ≤ Re(c) ≤ 2 and -2 ≤ Im(c) ≤ 2
-	Mandelbrot(-2.0, 2.0, -2.0, 2.0);
+	//Mandelbrot(-2.0, 2.0, -2.0, 2.0);
+	Mandelbrot(0.0 + 0.5, 0.0 - 0.0, 0.0 - 0.5, 0.0 + 0.5);
 	
 	// After Mandelbrot() completes:
 	//   - Graph.plane[][] contains computed escape times for 360,000 complex numbers

@@ -200,6 +200,35 @@ int main(void)
         }
         putchar('\n');
     }
+    // --- Output data for gnuplot ---
+    FILE *fp = fopen("lsq_data.dat", "w");
+    if (!fp) {
+        perror("Could not open lsq_data.dat for writing");
+        return EXIT_FAILURE;
+    }
+    for (k = 0; k <= n; k++) {
+        fprintf(fp, "% .10f % .10f % .10f\n", x[k], y[k], ys[k]);
+    }
+    fclose(fp);
 
+    // Output fitted line for plotting
+    FILE *fp_fit = fopen("lsq_fit.dat", "w");
+    if (!fp_fit) {
+        perror("Could not open lsq_fit.dat for writing");
+        return EXIT_FAILURE;
+    }
+    int Nplot = 200;
+    for (int i = 0; i <= Nplot; ++i) {
+        double xp = 0.0 + 10.0 * i / Nplot;
+        double yp_fit = f(xp, af[0], af[1]);
+        fprintf(fp_fit, "% .10f % .10f\n", xp, yp_fit);
+    }
+    fclose(fp_fit);
+
+    printf("\nData for gnuplot written to lsq_data.dat and lsq_fit.dat\n");
+    printf("You can plot with gnuplot using:\n");
+    printf("  gnuplot -persist -e \"plot 'lsq_data.dat' u 1:2 w p pt 7 ps 1.5 lc rgb 'red' title 'Noisy data', \\\n");
+    printf("    'lsq_data.dat' u 1:3 w l lc rgb 'blue' title 'True line', \\\n");
+    printf("    'lsq_fit.dat' u 1:2 w l lc rgb 'green' title 'Fitted line'\"\n");
     return EXIT_SUCCESS;
 }

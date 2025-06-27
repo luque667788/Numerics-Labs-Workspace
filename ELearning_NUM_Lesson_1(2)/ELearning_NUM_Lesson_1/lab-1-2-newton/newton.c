@@ -6,6 +6,9 @@
  * Newton's method is an iterative numerical technique for finding roots of equations. For square roots, it solves x^2 = f.
  *
  * MATHEMATICAL BACKGROUND:
+ * - Newton's method for solving f(x) = 0 uses the iteration:
+ *     x(n+1) = x(n) - f(x(n)) / f'(x(n))
+ *   where f'(x) is the derivative of f(x).
  * - To find sqrt(f), solve x^2 = f, or equivalently, x = sqrt(f).
  * - Newton's iteration formula for this is:
  *     x(n+1) = 0.5 * (x(n) + f / x(n))

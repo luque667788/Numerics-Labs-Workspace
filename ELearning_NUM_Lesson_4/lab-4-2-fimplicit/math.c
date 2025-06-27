@@ -1,4 +1,3 @@
-
 /*
  * CONVEX HULL CALCULATION PROGRAM
  * 
@@ -11,7 +10,11 @@
  * The algorithm works by:
  * 1. Finding the leftmost point (guaranteed to be on the hull)
  * 2. Starting from this point, finding the next point that makes the most 
- *    counterclockwise turn with respect to all other points
+ *    counterclockwise turn with respect to all other points (cross product based orientation test:
+ *    for each candidate point, compute the orientation of the triplet (current hull point, candidate, other point);
+ *    if another point is more counterclockwise than the current candidate, update the candidate;
+ *    after checking all points, the candidate is the next hull point)
+ * 
  * 3. Repeating until we return to the starting point
  * 
  * Time Complexity: O(nh) where n is number of points and h is number of hull points
@@ -132,26 +135,16 @@ static int convex(double Sx[], double Sy[], double Hx[], double Hy[], int n)
  * MAIN FUNCTION - Program Entry Point and Test Case
  * 
  * This function demonstrates the convex hull algorithm with a simple test case.
- * It defines 4 points and finds their convex hull, then prints the result.
- * 
- * Test Points:
- *   Point 1: (1, 1)
- *   Point 2: (1, 3) 
- *   Point 3: (2, 2)
- *   Point 4: (3, 2)
- * 
- * Expected convex hull: Points (1,1), (1,3), (3,2) 
- * Point (2,2) should be inside the hull and not included.
+ * It defines several points and finds their convex hull, then prints the result.
  */
 int main(void)
 {
-	// Define test points - 4 points in 2D space
-	// These arrays store the x and y coordinates respectively
-	double Sx[] = {1, 1, 2, 3};  // x-coordinates: [1, 1, 2, 3]
-	double Sy[] = {1, 3, 2, 2};  // y-coordinates: [1, 3, 2, 2]
-	                             // Points: (1,1), (1,3), (2,2), (3,2)
+	// Define test points - more points added
+	double Sx[] = {1, 1, 2, 3, 2.5, 2, 3.5, 0.5, 2, 2.2, 1.5};  // x-coordinates
+	double Sy[] = {1, 3, 2, 2, 2.5, 1.5, 3.2, 2.5, 2.8, 1.2, 2.7};  // y-coordinates
+	// Points: (1,1), (1,3), (2,2), (3,2), (2.5,2.5), (2,1.5), (3.5,3.2), (0.5,2.5), (2,2.8), (2.2,1.2), (1.5,2.7)
 
-	int n = 4;  // Number of input points
+	int n = sizeof(Sx) / sizeof(Sx[0]);  // Number of input points
 
 	// Allocate arrays to store convex hull points
 	// Size n+1 to be safe (hull can't have more than n points)
@@ -162,13 +155,40 @@ int main(void)
 	printf("The convex hull is:\n");
 
 	// Call convex hull function and get number of hull points
-	n = convex(Sx, Sy, Hx, Hy, n);
+	int hull_n = convex(Sx, Sy, Hx, Hy, n);
 
 	// Print all points in the convex hull
 	int i;  // Loop counter
-	for (i=0; i<n; i++)
+	for (i=0; i<hull_n; i++)
 		printf("(%.1f, %.1f)\n", Hx[i], Hy[i]);  // Print each hull point
+	// Write hull points to file for plotting
+	FILE *fp = fopen("hull.dat", "w");
+	if (fp) {
+		for (i = 0; i < hull_n; i++)
+			fprintf(fp, "%f %f\n", Hx[i], Hy[i]);
+		// Close the hull by repeating the first point
+		fprintf(fp, "%f %f\n", Hx[0], Hy[0]);
+		fclose(fp);
+	} else {
+		perror("Could not open hull.dat for writing");
+	}
 
-    // Return success code to operating system
-    return EXIT_SUCCESS;
+	// Write all input points to file
+	fp = fopen("points.dat", "w");
+	if (fp) {
+		for (i = 0; i < hull_n; i++)
+			fprintf(fp, "%f %f\n", Hx[i], Hy[i]);
+		for (i = 0; i < n; i++)
+			fprintf(fp, "%f %f\n", Sx[i], Sy[i]);
+		fclose(fp);
+	} else {
+		perror("Could not open points.dat for writing");
+	}
+
+	printf("\nData written to hull.dat and points.dat\n");
+	printf("You can plot with gnuplot using:\n");
+	printf("  gnuplot -persist -e \"plot 'points.dat' w p pt 7 ps 1.5 lc rgb 'blue' title 'Points', \\\n");
+	printf("    'hull.dat' w l lw 2 lc rgb 'red' title 'Convex Hull'\"\n");
+	// Return success code to operating system
+	return EXIT_SUCCESS;
 }
