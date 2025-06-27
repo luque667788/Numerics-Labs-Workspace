@@ -31,5 +31,6 @@ x1 = euler(u, a, x0, T, n);
 x2 = euler(x1, a, x0, T, n);
 
 plot(t, u, t, x1, t, x2)
+disp([t' u' x1' x2'])
 grid on
 
